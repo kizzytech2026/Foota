@@ -1,74 +1,70 @@
-import React, { useState } from "react";
+import React,{useState} from "react";
+import "../pages/Squad.css"
 
-const PlayerForm = ({ onAddPlayer, onClose }) => {
-  const [formData, setFormData] = useState({
-    name: "",
-    position: "ST",
-    appearances: 0,
-    goals: 0,
-    assists: 0,
+const PlayerForm=({onAddPlayer,onClose})=>{
+  const [formData,setFormData]=useState({
+    name:"",
+    position:"ST",
+    appearances:0,
+    goals:0,
+    assists:0,
   });
+  const [error,setError]=useState("");
 
-  const [error, setError] = useState("");
-
-  const handleChange = (evt) => {
-
-    setFormData((previousData) => ({
+  const handleChange=(e)=>{
+    const {name,value}=e.target;
+    setFormData((previousData)=>({
       ...previousData,
-      [evt.target.name]: evt.target.value,
+      [name]:value,
     }));
   };
 
-  const handleSubmit = (evt) => {
-    evt.preventDefault();
-
-    if (!formData.name.trim()) {
+  const handleSubmit=(e)=>{
+    e.preventDefault();
+    if(!formData.name.trim()){
       setError("Please enter the player's name.");
       return;
     }
-
-    const newPlayer = {
-      id: Date.now(),
-      name: formData.name.trim(),
-      position: formData.position,
-      appearances: Number(formData.appearances),
-      goals: Number(formData.goals),
-      assists: Number(formData.assists),
+    const newPlayer={
+      id:Date.now(),
+      name:formData.name.trim(),
+      position:formData.position,
+      appearances:Number(formData.appearances),
+      goals:Number(formData.goals),
+      assists:Number(formData.assists),
     };
-
     onAddPlayer(newPlayer);
-
     setFormData({
-      name: "",
-      position: "ST",
-      appearances: 0,
-      goals: 0,
-      assists: 0,
+      name:"",
+      position:"ST",
+      appearances:0,
+      goals:0,
+      assists:0,
     });
-
     setError("");
     onClose();
   };
 
-  return (
-    <div>
-        <div>
-            <h2>Add Player</h2>
-            <p>
-              Add a new player to your squad.
-            </p>
-        </div>
-        <div>
-          <button onClick={onClose}>×</button>
-        </div>
-
-        {error && <div>{error}</div>}
-
-        <form onSubmit={handleSubmit}>
+  return(
+    <div className="modal-overlay">
+      <div className="modal">
+        <div className="modal-header">
           <div>
-            <label>Player Name</label>
+            <h2 className="modal-title">Add Player</h2>
+            <p className="modal-subtitle">Add a new player to your squad.</p>
+          </div>
+          <button className="modal-close" type="button" onClick={onClose}>×</button>
+        </div>
 
+        {error&&(
+          <div className="error-message">{error}</div>
+        )}
+
+        <form className="modal-form" onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label className="form-label">Player Name</label>
             <input
+              className="form-input"
               type="text"
               name="name"
               value={formData.name}
@@ -77,10 +73,10 @@ const PlayerForm = ({ onAddPlayer, onClose }) => {
             />
           </div>
 
-          <div>
-            <label>Position</label>
-
+          <div className="form-group">
+            <label className="form-label">Position</label>
             <select
+              className="form-select"
               name="position"
               value={formData.position}
               onChange={handleChange}
@@ -97,11 +93,11 @@ const PlayerForm = ({ onAddPlayer, onClose }) => {
             </select>
           </div>
 
-          <div >
-            <div>
-              <label>Appearances</label>
-
+          <div className="stats-input-grid">
+            <div className="form-group">
+              <label className="form-label">Appearances</label>
               <input
+                className="form-input"
                 type="number"
                 min="0"
                 name="appearances"
@@ -110,9 +106,10 @@ const PlayerForm = ({ onAddPlayer, onClose }) => {
               />
             </div>
 
-            <div>
-              <label>Goals</label>
+            <div className="form-group">
+              <label className="form-label">Goals</label>
               <input
+                className="form-input"
                 type="number"
                 min="0"
                 name="goals"
@@ -121,9 +118,10 @@ const PlayerForm = ({ onAddPlayer, onClose }) => {
               />
             </div>
 
-            <div >
-              <label>Assists</label>
+            <div className="form-group">
+              <label className="form-label">Assists</label>
               <input
+                className="form-input"
                 type="number"
                 min="0"
                 name="assists"
@@ -133,12 +131,13 @@ const PlayerForm = ({ onAddPlayer, onClose }) => {
             </div>
           </div>
 
-          <div>
-            <button type="button" onClick={onClose}>Cancel</button>
-            <button type="submit">Add Player</button>
+          <div className="modal-actions">
+            <button type="button" className="cancel-btn" onClick={onClose}>Cancel</button>
+            <button type="submit" className="save-player-btn">Add Player</button>
           </div>
         </form>
       </div>
+    </div>
   );
 };
 

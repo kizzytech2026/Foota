@@ -87,5 +87,4 @@ const Squad=()=>{
     </div>
   );
 };
-
 export default Squad;

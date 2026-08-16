@@ -1,5 +1,11 @@
 import React from "react";
 import { BrowserRouter, Link, NavLink, Routes, Route } from "react-router-dom";
+import Dashboard from "./pages/Dashboard";
+import Squad from "./pages/Squad";
+import Matches from "./pages/Matches";
+import Statistics from "./pages/Statistics";
+import Settings from "./pages/Settings";
+import Layout from "./components/Layout";
 import "./App.css";
 
 const App = () => {

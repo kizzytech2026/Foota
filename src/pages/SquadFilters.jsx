@@ -25,7 +25,7 @@ const SquadFilters = ({searchTerm,setSearchTerm,positionFilter,setPositionFilter
             onChange={(e) =>
               setPositionFilter(e.target.value)
             }>
-            <option value="All">All Positions</option>
+            <option value="All">All</option>
             <option value="GK">GK</option>
             <option value="CB">CB</option>
             <option value="LB">LB</option>
@@ -33,7 +33,7 @@ const SquadFilters = ({searchTerm,setSearchTerm,positionFilter,setPositionFilter
             <option value="CM">CM</option>
             <option value="CAM">CAM</option>
             <option value="LW">LW</option>
-            <option value="RW">Right Winger</option>
+            <option value="RW">RW</option>
             <option value="ST">ST</option>
           </select>
         </div>

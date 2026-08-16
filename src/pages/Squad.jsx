@@ -1,6 +1,6 @@
 import React,{useMemo,useState} from "react";
-import SquadSummary from "../components/SquadSummary";
-import SquadFilters from "../components/SquadFilters";
+import SquadSummary from "../pages/SquadSummary";
+import SquadFilters from "../pages/SquadFilters";
 import PlayerCard from "../components/PlayerCard";
 import PlayerForm from "../components/PlayerForm";
 import "./Squad.css"

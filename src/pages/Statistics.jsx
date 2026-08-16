@@ -149,7 +149,6 @@ function Statistics() {
       <div className="two-column">
         <div className="panel">
           <h2>Top Scorer</h2>
-
           {stats.topScorer ? (
             <div className="player-highlight">
               <div className="avatar">

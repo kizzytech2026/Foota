@@ -48,7 +48,7 @@ export const initialMatches = [
 export const initialPlayers = [
   {
     id: 1,
-    name: "Brian Otieno",
+    name: "Don Sergon",
     position: "ST",
     appearances: 8,
     goals: 6,
@@ -56,7 +56,7 @@ export const initialPlayers = [
   },
   {
     id: 2,
-    name: "Kevin Mwangi",
+    name: "Derick Mwangi",
     position: "CM",
     appearances: 7,
     goals: 2,
@@ -64,26 +64,10 @@ export const initialPlayers = [
   },
   {
     id: 3,
-    name: "David Kamau",
+    name: "Gerald Kizito",
     position: "CB",
     appearances: 9,
     goals: 0,
     assists: 1,
-  },
-  {
-    id: 4,
-    name: "Samuel Kariuki",
-    position: "RW",
-    appearances: 8,
-    goals: 4,
-    assists: 3,
-  },
-  {
-    id: 5,
-    name: "Mark Njoroge",
-    position: "GK",
-    appearances: 9,
-    goals: 0,
-    assists: 0,
   },
 ];

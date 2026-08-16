@@ -8,7 +8,7 @@ import "./Squad.css"
 const initialPlayers=[
   {
     id:1,
-    name:"Don Sergon",
+    name:"Brian Otieno",
     position:"ST",
     appearances:8,
     goals:6,
@@ -16,7 +16,7 @@ const initialPlayers=[
   },
   {
     id:2,
-    name:"Derick Mwangi",
+    name:"Kevin Mwangi",
     position:"CM",
     appearances:7,
     goals:2,
@@ -24,7 +24,7 @@ const initialPlayers=[
   },
   {
     id:3,
-    name:"Gerald Kizito",
+    name:"David Kamau",
     position:"CB",
     appearances:9,
     goals:0,

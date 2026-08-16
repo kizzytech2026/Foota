@@ -1,19 +1,14 @@
-import Navbar from "./Navbar";
-import Sidebar from "./Sidebar";
+import { useContext } from "react";
+import { TeamContext } from "../context/TeamContext";
 
 function Layout({ children }) {
-    return (
-        <div className="app">
-            <Navbar />
-            <div className="app-body">
-                <Sidebar />
+  const { darkMode } = useContext(TeamContext);
 
-                <main className="main-content">
-                    {children}
-                </main>
-            </div>
-        </div>
-    );
+  return (
+    <div className={darkMode ? "app dark-mode" : "app"}>
+      {children}
+    </div>
+  );
 }
 
 export default Layout;

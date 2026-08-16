@@ -17,7 +17,7 @@ function Matches() {
     date: "",
     time: "",
     venue: "",
-    type: "League",
+    type: "Leagues",
   });
 
   const filteredMatches = useMemo(() => {

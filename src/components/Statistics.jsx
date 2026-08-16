@@ -11,7 +11,7 @@ function Statistics() {
     initialMatches
   );
 
-  const [players] = useLocalStorage(
+  const [Players] = useLocalStorage(
     "teamhub-players",
     initialPlayers
   );

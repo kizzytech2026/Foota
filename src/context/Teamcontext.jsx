@@ -1,4 +1,5 @@
 import { createContext, useState } from "react";
+import useLocalStorage from "../hooks/useLocalStorage";
 
 export const TeamContext = createContext();
 
@@ -9,7 +10,7 @@ export function TeamProvider({ children }) {
     season: "2026 Season",
   });
 
-  const [players, setPlayers] = useState([
+  const [players, setPlayers] = useLocalStorage("teamhub-players",[
     {
       id: 1,
       name: "Brian Otieno",
@@ -36,7 +37,7 @@ export function TeamProvider({ children }) {
     },
   ]);
 
-  const [matches, setMatches] = useState([
+  const [matches, setMatches] = useLocalStorage("teamhub-matches",[
     {
       id: 1,
       opponent: "Kahawa United",

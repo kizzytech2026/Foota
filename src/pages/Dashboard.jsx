@@ -1,25 +1,25 @@
 import { useContext } from "react";
 import { TeamContext } from "../context/TeamContext";
-
 import StatCard from "../components/StatCard";
 import MatchPreview from "../components/MatchPreview";
 
 function Dashboard() {
-  const { team, players, matches } = useContext(TeamContext);
+  const { team, players, matches } =
+    useContext(TeamContext);
 
   const upcomingMatches = matches.filter(
-    (match) => match.status === "Upcoming"
+    (match) => match.result === "Upcoming"
   );
 
   const nextMatch = upcomingMatches[0];
 
   const totalGoals = players.reduce(
-    (total, player) => total + player.goals,
+    (total, player) => total + Number(player.goals || 0),
     0
   );
 
   const completedMatches = matches.filter(
-    (match) => match.status === "Completed"
+    (match) => match.result !== "Upcoming"
   );
 
   return (
@@ -27,7 +27,9 @@ function Dashboard() {
       <div className="page-header">
         <div>
           <p className="eyebrow">TEAM OVERVIEW</p>
+
           <h1>Welcome to {team.name}</h1>
+
           <p className="page-description">
             Here's what's happening with your team.
           </p>

@@ -1,12 +1,14 @@
-import { useMemo, useState } from "react";
-import useLocalStorage from "../hooks/useLocalStorage";
-import { initialMatches } from "../data/initialData";
+import { useMemo, useState, useContext } from "react";
+import { TeamContext } from "../context/TeamContext";
 
 function Matches() {
-  const [matches, setMatches] = useLocalStorage(
-    "teamhub-matches",
-    initialMatches
-  );
+  const {
+    team,
+    matches,
+    addMatch,
+    deleteMatch,
+    updateMatchResult,
+  } = useContext(TeamContext);
 
   const [filter, setFilter] = useState("All");
   const [search, setSearch] = useState("");
@@ -17,13 +19,15 @@ function Matches() {
     date: "",
     time: "",
     venue: "",
-    type: "Leagues",
+    type: "League",
   });
 
   const filteredMatches = useMemo(() => {
     return matches.filter((match) => {
+      const result = match.result || "Upcoming";
+
       const matchesFilter =
-        filter === "All" || match.result === filter;
+        filter === "All" || result === filter;
 
       const matchesSearch = match.opponent
         .toLowerCase()
@@ -55,8 +59,7 @@ function Matches() {
       return;
     }
 
-    const newMatch = {
-      id: Date.now(),
+    addMatch({
       opponent: formData.opponent,
       date: formData.date,
       time: formData.time,
@@ -65,9 +68,7 @@ function Matches() {
       result: "Upcoming",
       teamScore: null,
       opponentScore: null,
-    };
-
-    setMatches((previous) => [newMatch, ...previous]);
+    });
 
     setFormData({
       opponent: "",
@@ -80,30 +81,42 @@ function Matches() {
     setShowForm(false);
   };
 
-  const deleteMatch = (id) => {
+  const handleDeleteMatch = (id) => {
     const confirmed = window.confirm(
       "Are you sure you want to delete this match?"
     );
 
     if (!confirmed) return;
 
-    setMatches((previous) =>
-      previous.filter((match) => match.id !== id)
-    );
+    deleteMatch(id);
   };
 
-  const updateResult = (id, result, teamScore, opponentScore) => {
-    setMatches((previous) =>
-      previous.map((match) =>
-        match.id === id
-          ? {
-              ...match,
-              result,
-              teamScore,
-              opponentScore,
-            }
-          : match
-      )
+  const handleResultChange = (match, result) => {
+    if (result === "Upcoming") {
+      updateMatchResult(match.id, result, null, null);
+      return;
+    }
+
+    const teamScore = prompt(
+      `Enter ${team.name} score:`
+    );
+
+    const opponentScore = prompt(
+      "Enter opponent score:"
+    );
+
+    if (
+      teamScore === null ||
+      opponentScore === null
+    ) {
+      return;
+    }
+
+    updateMatchResult(
+      match.id,
+      result,
+      Number(teamScore),
+      Number(opponentScore)
     );
   };
 
@@ -124,12 +137,16 @@ function Matches() {
       </div>
 
       {showForm && (
-        <form className="form-card" onSubmit={handleSubmit}>
+        <form
+          className="form-card"
+          onSubmit={handleSubmit}
+        >
           <h2>Add New Match</h2>
 
           <div className="form-grid">
             <div className="form-group">
               <label>Opponent</label>
+
               <input
                 type="text"
                 name="opponent"
@@ -141,6 +158,7 @@ function Matches() {
 
             <div className="form-group">
               <label>Date</label>
+
               <input
                 type="date"
                 name="date"
@@ -151,6 +169,7 @@ function Matches() {
 
             <div className="form-group">
               <label>Time</label>
+
               <input
                 type="time"
                 name="time"
@@ -161,6 +180,7 @@ function Matches() {
 
             <div className="form-group">
               <label>Venue</label>
+
               <input
                 type="text"
                 name="venue"
@@ -172,6 +192,7 @@ function Matches() {
 
             <div className="form-group">
               <label>Match Type</label>
+
               <select
                 name="type"
                 value={formData.type}
@@ -184,7 +205,10 @@ function Matches() {
             </div>
           </div>
 
-          <button type="submit" className="primary-btn">
+          <button
+            type="submit"
+            className="primary-btn"
+          >
             Save Match
           </button>
         </form>
@@ -195,12 +219,16 @@ function Matches() {
           type="text"
           placeholder="Search opponent..."
           value={search}
-          onChange={(event) => setSearch(event.target.value)}
+          onChange={(event) =>
+            setSearch(event.target.value)
+          }
         />
 
         <select
           value={filter}
-          onChange={(event) => setFilter(event.target.value)}
+          onChange={(event) =>
+            setFilter(event.target.value)
+          }
         >
           <option value="All">All Matches</option>
           <option value="Upcoming">Upcoming</option>
@@ -217,81 +245,72 @@ function Matches() {
             <p>Try changing your search or filter.</p>
           </div>
         ) : (
-          filteredMatches.map((match) => (
-            <div className="match-card" key={match.id}>
-              <div className="match-top">
-                <span className="match-type">{match.type}</span>
+          filteredMatches.map((match) => {
+            const result = match.result || "Upcoming";
 
-                <button
-                  className="delete-btn"
-                  onClick={() => deleteMatch(match.id)}
-                >
-                  Delete
-                </button>
-              </div>
+            return (
+              <div
+                className="match-card"
+                key={match.id}
+              >
+                <div className="match-top">
+                  <span className="match-type">
+                    {match.type}
+                  </span>
 
-              <h2>TeamHub FC</h2>
-
-              <div className="vs-row">
-                <strong>TeamHub FC</strong>
-                <span>VS</span>
-                <strong>{match.opponent}</strong>
-              </div>
-
-              {match.result !== "Upcoming" && (
-                <div className="score">
-                  {match.teamScore} - {match.opponentScore}
+                  <button
+                    className="delete-btn"
+                    onClick={() =>
+                      handleDeleteMatch(match.id)
+                    }
+                  >
+                    Delete
+                  </button>
                 </div>
-              )}
 
-              <p>
-                📅 {match.date} &nbsp; 🕒 {match.time}
-              </p>
+                <h2>{team.name}</h2>
 
-              <p>📍 {match.venue}</p>
+                <div className="vs-row">
+                  <strong>{team.name}</strong>
+                  <span>VS</span>
+                  <strong>{match.opponent}</strong>
+                </div>
 
-              <div className="result-controls">
-                <select
-                  value={match.result}
-                  onChange={(event) => {
-                    const result = event.target.value;
+                {result !== "Upcoming" && (
+                  <div className="score">
+                    {match.teamScore} -{" "}
+                    {match.opponentScore}
+                  </div>
+                )}
 
-                    if (result === "Upcoming") {
-                      updateResult(match.id, result, null, null);
-                      return;
+                <p>
+                  📅 {match.date} &nbsp; 🕒{" "}
+                  {match.time}
+                </p>
+
+                <p>📍 {match.venue}</p>
+
+                <div className="result-controls">
+                  <select
+                    value={result}
+                    onChange={(event) =>
+                      handleResultChange(
+                        match,
+                        event.target.value
+                      )
                     }
-
-                    const teamScore = prompt(
-                      "Enter TeamHub FC score:"
-                    );
-
-                    const opponentScore = prompt(
-                      "Enter opponent score:"
-                    );
-
-                    if (
-                      teamScore === null ||
-                      opponentScore === null
-                    ) {
-                      return;
-                    }
-
-                    updateResult(
-                      match.id,
-                      result,
-                      Number(teamScore),
-                      Number(opponentScore)
-                    );
-                  }}
-                >
-                  <option value="Upcoming">Upcoming</option>
-                  <option value="Won">Won</option>
-                  <option value="Draw">Draw</option>
-                  <option value="Lost">Lost</option>
-                </select>
+                  >
+                    <option value="Upcoming">
+                      Upcoming
+                    </option>
+                    <option value="Won">Won</option>
+                    <option value="Draw">Draw</option>
+                    <option value="Lost">Lost</option>
+                  </select>
+                </div>
               </div>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
     </div>

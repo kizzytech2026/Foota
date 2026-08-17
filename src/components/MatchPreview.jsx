@@ -20,7 +20,7 @@ function MatchPreview({ match }) {
 
             <div className="opponent">
                 <span className="match-label">OPPONENT</span>
-                <h2>{match.oppenent}</h2>
+                <h2>{match.opponent}</h2>
                 </div>
 
                 <div className="match-details">

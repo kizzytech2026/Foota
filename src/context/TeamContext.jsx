@@ -3,66 +3,82 @@ import useLocalStorage from "../hooks/useLocalStorage";
 
 export const TeamContext = createContext();
 
+const defaultPlayers = [
+  {
+    id: 1,
+    name: "Brian Otieno",
+    position: "ST",
+    appearances: 8,
+    goals: 6,
+    assists: 2,
+  },
+  {
+    id: 2,
+    name: "Kevin Mwangi",
+    position: "CM",
+    appearances: 7,
+    goals: 2,
+    assists: 5,
+  },
+  {
+    id: 3,
+    name: "David Kamau",
+    position: "CB",
+    appearances: 9,
+    goals: 0,
+    assists: 1,
+  },
+];
+
+const defaultMatches = [
+  {
+    id: 1,
+    opponent: "Kahawa United",
+    date: "2026-08-21",
+    time: "15:00",
+    venue: "Kahawa Grounds",
+    type: "League",
+    result: "Upcoming",
+    teamScore: null,
+    opponentScore: null,
+  },
+  {
+    id: 2,
+    opponent: "Westlands FC",
+    date: "2026-08-10",
+    time: "16:00",
+    venue: "Home Ground",
+    type: "Friendly",
+    result: "Won",
+    teamScore: 3,
+    opponentScore: 1,
+  },
+];
+
 export function TeamProvider({ children }) {
-  const [team, setTeam] = useState({
-    name: "TeamHub FC",
-    coach: "Team Coach",
-    season: "2026 Season",
-  });
+  const [team, setTeam] = useLocalStorage(
+    "teamhub-team",
+    {
+      name: "TeamHub FC",
+      coach: "Team Coach",
+      season: "2026 Season",
+    }
+  );
 
-  const [players, setPlayers] = useLocalStorage("teamhub-players", [
-    {
-      id: 1,
-      name: "Brian Otieno",
-      position: "ST",
-      appearances: 8,
-      goals: 6,
-      assists: 2,
-    },
-    {
-      id: 2,
-      name: "Kevin Mwangi",
-      position: "CM",
-      appearances: 7,
-      goals: 2,
-      assists: 5,
-    },
-    {
-      id: 3,
-      name: "David Kamau",
-      position: "CB",
-      appearances: 9,
-      goals: 0,
-      assists: 1,
-    },
-  ]);
+  const [players, setPlayers] = useLocalStorage(
+    "teamhub-players",
+    defaultPlayers
+  );
 
-  const [matches, setMatches] = useLocalStorage("teamhub-matches", [
-    {
-      id: 1,
-      opponent: "Kahawa United",
-      date: "2026-08-21",
-      time: "15:00",
-      venue: "Kahawa Grounds",
-      type: "League",
-      result: "Upcoming",
-      teamScore: null,
-      opponentScore: null,
-    },
-    {
-      id: 2,
-      opponent: "Westlands FC",
-      date: "2026-08-10",
-      time: "16:00",
-      venue: "Home Ground",
-      type: "Friendly",
-      result: "Won",
-      teamScore: 3,
-      opponentScore: 1,
-    },
-  ]);
+  const [matches, setMatches] = useLocalStorage(
+    "teamhub-matches",
+    defaultMatches
+  );
 
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useLocalStorage(
+    "teamhub-dark-mode",
+    false
+  );
 
   const addPlayer = (player) => {
     setPlayers((currentPlayers) => [
@@ -76,7 +92,9 @@ export function TeamProvider({ children }) {
 
   const deletePlayer = (playerId) => {
     setPlayers((currentPlayers) =>
-      currentPlayers.filter((player) => player.id !== playerId)
+      currentPlayers.filter(
+        (player) => player.id !== playerId
+      )
     );
   };
 
@@ -92,7 +110,9 @@ export function TeamProvider({ children }) {
 
   const deleteMatch = (matchId) => {
     setMatches((currentMatches) =>
-      currentMatches.filter((match) => match.id !== matchId)
+      currentMatches.filter(
+        (match) => match.id !== matchId
+      )
     );
   };
 
@@ -127,6 +147,18 @@ export function TeamProvider({ children }) {
     setDarkMode((currentMode) => !currentMode);
   };
 
+  const resetData = () => {
+    setTeam({
+      name: "TeamHub FC",
+      coach: "Team Coach",
+      season: "2026 Season",
+    });
+
+    setPlayers(defaultPlayers);
+    setMatches(defaultMatches);
+    setDarkMode(false);
+  };
+
   return (
     <TeamContext.Provider
       value={{
@@ -143,6 +175,7 @@ export function TeamProvider({ children }) {
         darkMode,
         setDarkMode,
         toggleDarkMode,
+        resetData,
       }}
     >
       {children}

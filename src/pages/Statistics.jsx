@@ -1,20 +1,8 @@
-import { useMemo } from "react";
-import useLocalStorage from "../hooks/useLocalStorage";
-import {
-  initialMatches,
-  initialPlayers,
-} from "../data/initialData";
+import { useMemo, useContext } from "react";
+import { TeamContext } from "../context/TeamContext";
 
 function Statistics() {
-  const [matches] = useLocalStorage(
-    "teamhub-matches",
-    initialMatches
-  );
-
-  const [players] = useLocalStorage(
-    "teamhub-players",
-    initialPlayers
-  );
+  const { team, matches, players } = useContext(TeamContext);
 
   const stats = useMemo(() => {
     const completedMatches = matches.filter(
@@ -34,36 +22,48 @@ function Statistics() {
     ).length;
 
     const goalsScored = completedMatches.reduce(
-      (total, match) => total + (match.teamScore || 0),
+      (total, match) =>
+        total + Number(match.teamScore || 0),
       0
     );
 
     const goalsConceded = completedMatches.reduce(
-      (total, match) => total + (match.opponentScore || 0),
+      (total, match) =>
+        total + Number(match.opponentScore || 0),
       0
     );
 
     const totalGoals = players.reduce(
-      (total, player) => total + Number(player.goals || 0),
+      (total, player) =>
+        total + Number(player.goals || 0),
       0
     );
 
     const totalAssists = players.reduce(
-      (total, player) => total + Number(player.assists || 0),
+      (total, player) =>
+        total + Number(player.assists || 0),
       0
     );
 
     const winPercentage =
       completedMatches.length === 0
         ? 0
-        : Math.round((wins / completedMatches.length) * 100);
+        : Math.round(
+            (wins / completedMatches.length) * 100
+          );
 
     const topScorer =
-      [...players].sort((a, b) => b.goals - a.goals)[0] || null;
+      [...players].sort(
+        (a, b) =>
+          Number(b.goals || 0) -
+          Number(a.goals || 0)
+      )[0] || null;
 
     const mostAppearances =
       [...players].sort(
-        (a, b) => b.appearances - a.appearances
+        (a, b) =>
+          Number(b.appearances || 0) -
+          Number(a.appearances || 0)
       )[0] || null;
 
     return {
@@ -129,14 +129,21 @@ function Statistics() {
       <div className="page-header">
         <div>
           <h1>Statistics</h1>
-          <p>Analyze TeamHub FC performance.</p>
+          <p>
+            Analyze {team.name} performance.
+          </p>
         </div>
       </div>
 
       <div className="stats-grid">
         {statCards.map((stat) => (
-          <div className="stat-card" key={stat.title}>
-            <div className="stat-icon">{stat.icon}</div>
+          <div
+            className="stat-card"
+            key={stat.title}
+          >
+            <div className="stat-icon">
+              {stat.icon}
+            </div>
 
             <div>
               <p>{stat.title}</p>
@@ -149,6 +156,7 @@ function Statistics() {
       <div className="two-column">
         <div className="panel">
           <h2>Top Scorer</h2>
+
           {stats.topScorer ? (
             <div className="player-highlight">
               <div className="avatar">
@@ -156,11 +164,18 @@ function Statistics() {
               </div>
 
               <div>
-                <h3>{stats.topScorer.name}</h3>
-                <p>{stats.topScorer.position}</p>
+                <h3>
+                  {stats.topScorer.name}
+                </h3>
+
+                <p>
+                  {stats.topScorer.position}
+                </p>
               </div>
 
-              <strong>{stats.topScorer.goals} Goals</strong>
+              <strong>
+                {stats.topScorer.goals} Goals
+              </strong>
             </div>
           ) : (
             <p>No player data available.</p>
@@ -177,8 +192,13 @@ function Statistics() {
               </div>
 
               <div>
-                <h3>{stats.mostAppearances.name}</h3>
-                <p>{stats.mostAppearances.position}</p>
+                <h3>
+                  {stats.mostAppearances.name}
+                </h3>
+
+                <p>
+                  {stats.mostAppearances.position}
+                </p>
               </div>
 
               <strong>
